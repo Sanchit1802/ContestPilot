@@ -1,0 +1,53 @@
+# --- Android / Gradle ---
+*.iml
+.gradle/
+.kotlin/
+/build
+**/build/
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# --- IDE ---
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/deploymentTargetSelector.xml
+.DS_Store
+
+# --- Secrets and credentials -------------------------------------------------
+# Nothing in this repository may ever contain a Codeforces password, a session
+# cookie, a Playwright storage state or a GitHub token. These patterns are a
+# safety net; the real protection is that no code reads a credential from a file.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+secrets.properties
+credentials.json
+storage_state.json
+*storage-state*.json
+playwright-state*.json
+auth.json
+cookies.json
+cookies.txt
+
+# --- Automation artefacts ---
+automation/status/
+status/
+*.har
+playwright-report/
+test-results/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/

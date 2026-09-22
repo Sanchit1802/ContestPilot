@@ -1,0 +1,76 @@
+name: CI
+
+# Builds the app and runs every test that does not need a device. Instrumentation tests
+# need an emulator and are run locally; see README.md.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  automation:
+    name: Automation tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: automation/requirements-dev.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r automation/requirements-dev.txt
+
+      - name: Run the offline test suite
+        # No network, no browser, no credentials.
+        working-directory: automation
+        run: python -m pytest tests -q
+
+  android:
+    name: Android build and unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest --no-daemon
+
+      - name: Compile the instrumentation test sources
+        # Compiling them here catches breakage even though they cannot run without a device.
+        run: ./gradlew assembleDebugAndroidTest --no-daemon
+
+      - name: Assemble the debug APK
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: unit-test-reports
+          path: app/build/reports/tests/
+          retention-days: 7
+          if-no-files-found: ignore

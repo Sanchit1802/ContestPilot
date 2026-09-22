@@ -1,0 +1,311 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "db3b5614cd63cb55b3808ff4fa0b46b7",
+    "entities": [
+      {
+        "tableName": "contests",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `platform` TEXT NOT NULL, `platformContestId` TEXT NOT NULL, `name` TEXT NOT NULL, `phase` TEXT NOT NULL, `startTimeSeconds` INTEGER, `durationSeconds` INTEGER NOT NULL, `division` TEXT NOT NULL, `url` TEXT NOT NULL, `fetched_at_epoch_seconds` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "platform",
+            "columnName": "platform",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "platformContestId",
+            "columnName": "platformContestId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phase",
+            "columnName": "phase",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startTimeSeconds",
+            "columnName": "startTimeSeconds",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "durationSeconds",
+            "columnName": "durationSeconds",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "division",
+            "columnName": "division",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fetchedAtEpochSeconds",
+            "columnName": "fetched_at_epoch_seconds",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_contests_startTimeSeconds",
+            "unique": false,
+            "columnNames": [
+              "startTimeSeconds"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contests_startTimeSeconds` ON `${TABLE_NAME}` (`startTimeSeconds`)"
+          },
+          {
+            "name": "index_contests_platform",
+            "unique": false,
+            "columnNames": [
+              "platform"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contests_platform` ON `${TABLE_NAME}` (`platform`)"
+          }
+        ]
+      },
+      {
+        "tableName": "registration_states",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contestId` TEXT NOT NULL, `status` TEXT NOT NULL, `message` TEXT, `updatedAtEpochSeconds` INTEGER, PRIMARY KEY(`contestId`))",
+        "fields": [
+          {
+            "fieldPath": "contestId",
+            "columnName": "contestId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "updatedAtEpochSeconds",
+            "columnName": "updatedAtEpochSeconds",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "contestId"
+          ]
+        }
+      },
+      {
+        "tableName": "notification_schedules",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contestId` TEXT NOT NULL, `contestName` TEXT NOT NULL, `platformName` TEXT NOT NULL, `requestCode` INTEGER NOT NULL, `triggerAtEpochMillis` INTEGER NOT NULL, `contestStartEpochMillis` INTEGER NOT NULL, `leadMinutes` INTEGER NOT NULL, `delivered` INTEGER NOT NULL, `exact` INTEGER NOT NULL, `scheduledAtEpochMillis` INTEGER NOT NULL, PRIMARY KEY(`contestId`))",
+        "fields": [
+          {
+            "fieldPath": "contestId",
+            "columnName": "contestId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contestName",
+            "columnName": "contestName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "platformName",
+            "columnName": "platformName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "requestCode",
+            "columnName": "requestCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "triggerAtEpochMillis",
+            "columnName": "triggerAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contestStartEpochMillis",
+            "columnName": "contestStartEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "leadMinutes",
+            "columnName": "leadMinutes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "delivered",
+            "columnName": "delivered",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exact",
+            "columnName": "exact",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scheduledAtEpochMillis",
+            "columnName": "scheduledAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "contestId"
+          ]
+        }
+      },
+      {
+        "tableName": "sync_states",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`source` TEXT NOT NULL, `outcome` TEXT NOT NULL, `lastSuccessEpochSeconds` INTEGER, `lastAttemptEpochSeconds` INTEGER, `message` TEXT, PRIMARY KEY(`source`))",
+        "fields": [
+          {
+            "fieldPath": "source",
+            "columnName": "source",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "outcome",
+            "columnName": "outcome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSuccessEpochSeconds",
+            "columnName": "lastSuccessEpochSeconds",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lastAttemptEpochSeconds",
+            "columnName": "lastAttemptEpochSeconds",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "source"
+          ]
+        }
+      },
+      {
+        "tableName": "automation_status",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `runStatus` TEXT NOT NULL, `message` TEXT, `generatedAtEpochSeconds` INTEGER, `workflowRunUrl` TEXT, `codeforcesHandle` TEXT, `registrationsAttempted` INTEGER NOT NULL, `registrationsSucceeded` INTEGER NOT NULL, `registrationsFailed` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "runStatus",
+            "columnName": "runStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "generatedAtEpochSeconds",
+            "columnName": "generatedAtEpochSeconds",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "workflowRunUrl",
+            "columnName": "workflowRunUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "codeforcesHandle",
+            "columnName": "codeforcesHandle",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "registrationsAttempted",
+            "columnName": "registrationsAttempted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "registrationsSucceeded",
+            "columnName": "registrationsSucceeded",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "registrationsFailed",
+            "columnName": "registrationsFailed",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'db3b5614cd63cb55b3808ff4fa0b46b7')"
+    ]
+  }
+}

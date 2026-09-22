@@ -1,0 +1,67 @@
+name: Publish status document
+description: >
+  Commits the automation status JSON to the orphan `status` branch so the Android app can
+  fetch it over plain HTTPS without any token.
+
+inputs:
+  file:
+    description: Path to the status JSON produced by the automation.
+    required: true
+  destination:
+    description: File name the document is published under on the status branch.
+    required: false
+    default: automation-status.json
+  branch:
+    description: Branch the document is published on.
+    required: false
+    default: status
+  message:
+    description: Commit message.
+    required: false
+    default: 'chore: update automation status'
+
+runs:
+  using: composite
+  steps:
+    - name: Commit to the status branch
+      shell: bash
+      env:
+        STATUS_FILE: ${{ inputs.file }}
+        STATUS_DESTINATION: ${{ inputs.destination }}
+        STATUS_BRANCH: ${{ inputs.branch }}
+        COMMIT_MESSAGE: ${{ inputs.message }}
+      run: |
+        set -euo pipefail
+
+        if [ ! -f "$STATUS_FILE" ]; then
+          echo "::error::No status document at $STATUS_FILE"
+          exit 1
+        fi
+
+        # The status branch is an orphan holding only these small JSON files, so
+        # publishing never touches the source history and the branch stays tiny however
+        # often it runs.
+        workdir="$(mktemp -d)"
+        cp "$STATUS_FILE" "$workdir/published.json"
+
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+        if git ls-remote --exit-code --heads origin "$STATUS_BRANCH" >/dev/null 2>&1; then
+          git fetch origin "$STATUS_BRANCH":"$STATUS_BRANCH"
+          git checkout "$STATUS_BRANCH"
+        else
+          git checkout --orphan "$STATUS_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+        fi
+
+        cp "$workdir/published.json" "$STATUS_DESTINATION"
+        git add "$STATUS_DESTINATION"
+
+        if git diff --cached --quiet; then
+          echo "Status document unchanged; nothing to publish."
+          exit 0
+        fi
+
+        git commit -m "$COMMIT_MESSAGE"
+        git push origin "$STATUS_BRANCH"

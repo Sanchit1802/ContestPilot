@@ -1,0 +1,4 @@
+# Runtime dependencies for the ContestPilot cloud automation.
+# Pinned so a GitHub Actions run is reproducible.
+playwright==1.63.0
+requests==2.34.2
