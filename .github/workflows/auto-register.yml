@@ -60,11 +60,25 @@ jobs:
           AUTO_REGISTER_DIVISIONS: ${{ vars.AUTO_REGISTER_DIVISIONS }}
           CONTEST_WINDOW_DAYS: ${{ vars.CONTEST_WINDOW_DAYS }}
           AUTO_REGISTRATION_ENABLED: ${{ vars.AUTO_REGISTRATION_ENABLED }}
+          # Optional override when Codeforces is slow for the runner's network.
+          # Unset falls back to the 45s default in config.py.
+          PLAYWRIGHT_TIMEOUT_MS: ${{ vars.PLAYWRIGHT_TIMEOUT_MS }}
           WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           python automation/main.py \
             --output status/automation-status.json \
             ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Upload failure diagnostics
+        # A browser failure is otherwise a black box: this uploads the screenshot and
+        # page HTML captured at the point of failure so it can actually be diagnosed.
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: login-diagnostics
+          path: status/debug
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Publish the status document
         uses: ./.github/actions/publish-status

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 
+from . import diagnostics
 from .auth import detect_blockers
 from .config import Config, redact
 from .models import Contest, RegistrationResult, RegistrationStatus
@@ -32,6 +33,12 @@ NOT_OPEN_MARKERS = (
 #: The terms checkbox and submit control on the registration form.
 TERMS_CHECKBOX_SELECTOR = "input[name='takePartAs'], input#terms, input[type='checkbox']"
 SUBMIT_SELECTOR = "input[type='submit'][value*='Register'], input.submit[type='submit']"
+
+
+def _capture_if_configured(page, config: Config, contest: Contest, name: str) -> None:
+    """Named per contest so one failing round never overwrites another's evidence."""
+    if config.debug_dir:
+        diagnostics.capture(page, config.debug_dir, f"register-{contest.contest_id}-{name}")
 
 
 def classify_registration_page(content: str) -> RegistrationStatus | None:
@@ -65,6 +72,7 @@ def register_for_contest(page, contest: Contest, config: Config) -> Registration
             timeout=config.timeout_ms,
         )
     except Exception as exc:  # noqa: BLE001 - Playwright raises several unrelated types
+        _capture_if_configured(page, config, contest, "navigation-failed")
         return RegistrationResult(
             contest,
             RegistrationStatus.FAILED,
@@ -75,6 +83,7 @@ def register_for_contest(page, contest: Contest, config: Config) -> Registration
 
     blocker = detect_blockers(content)
     if blocker is not None:
+        _capture_if_configured(page, config, contest, "blocked")
         return RegistrationResult(
             contest,
             RegistrationStatus.FAILED,
@@ -113,6 +122,7 @@ def register_for_contest(page, contest: Contest, config: Config) -> Registration
 
         submit = page.locator(SUBMIT_SELECTOR).first
         if submit.count() == 0:
+            _capture_if_configured(page, config, contest, "no-submit-control")
             return RegistrationResult(
                 contest,
                 RegistrationStatus.FAILED,
@@ -123,6 +133,7 @@ def register_for_contest(page, contest: Contest, config: Config) -> Registration
         submit.click(timeout=config.timeout_ms)
         page.wait_for_load_state("domcontentloaded", timeout=config.timeout_ms)
     except Exception as exc:  # noqa: BLE001 - Playwright raises several unrelated types
+        _capture_if_configured(page, config, contest, "submit-failed")
         return RegistrationResult(
             contest,
             RegistrationStatus.FAILED,
@@ -142,6 +153,7 @@ def _verify_registration(page, contest: Contest, config: Config) -> Registration
         )
         content = page.content()
     except Exception as exc:  # noqa: BLE001 - Playwright raises several unrelated types
+        _capture_if_configured(page, config, contest, "verification-failed")
         return RegistrationResult(
             contest,
             RegistrationStatus.FAILED,
@@ -156,6 +168,7 @@ def _verify_registration(page, contest: Contest, config: Config) -> Registration
             "Registered by the cloud automation.",
         )
 
+    _capture_if_configured(page, config, contest, "unconfirmed")
     return RegistrationResult(
         contest,
         RegistrationStatus.FAILED,

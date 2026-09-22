@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import logging
 
+from . import diagnostics
 from .config import Config, redact
 from .models import LoginStatus
 
@@ -83,18 +84,28 @@ def is_logged_in(page_content: str, handle: str) -> bool:
     return "/logout" in lowered and handle.lower() in lowered
 
 
+def _capture_if_configured(page, config: Config, name: str) -> None:
+    if config.debug_dir:
+        diagnostics.capture(page, config.debug_dir, name)
+
+
 def log_in(page, config: Config) -> None:
     """Sign ``page`` in as the configured user.
 
     Raises :class:`LoginError` with a specific status when Codeforces refuses or asks for
     something only a human can supply. The password is typed into the form and never
     logged, stored or included in any message.
+
+    Every failure branch saves a screenshot and the page HTML when ``config.debug_dir``
+    is set, so a page Codeforces served that this module does not yet recognise can be
+    inspected afterwards instead of guessed at.
     """
     LOGGER.info("Signing in to Codeforces as %s", config.handle)
     page.goto(LOGIN_URL, wait_until="domcontentloaded", timeout=config.timeout_ms)
 
     blocker = detect_blockers(page.content())
     if blocker is not None:
+        _capture_if_configured(page, config, "login-blocked-before-fill")
         raise LoginError(
             blocker,
             "Codeforces presented an additional verification step on the sign-in page. "
@@ -107,16 +118,26 @@ def log_in(page, config: Config) -> None:
         page.click("input[type='submit'][value='Login']", timeout=config.timeout_ms)
         page.wait_for_load_state("domcontentloaded", timeout=config.timeout_ms)
     except Exception as exc:  # noqa: BLE001 - Playwright raises several unrelated types
+        # This is the "the login form never appeared" case: whatever Codeforces served
+        # instead did not match any known blocker text. Diagnostics are the only way to
+        # find out what it actually was.
+        _capture_if_configured(page, config, "login-form-error")
         raise LoginError(
             LoginStatus.ERROR,
             "The Codeforces sign-in form did not behave as expected: "
-            + redact(str(exc)),
+            + redact(str(exc))
+            + (
+                " Diagnostics saved for inspection."
+                if config.debug_dir
+                else ""
+            ),
         ) from exc
 
     content = page.content()
 
     blocker = detect_blockers(content)
     if blocker is not None:
+        _capture_if_configured(page, config, "login-blocked-after-submit")
         raise LoginError(
             blocker,
             {
@@ -136,6 +157,7 @@ def log_in(page, config: Config) -> None:
         )
 
     if not is_logged_in(content, config.handle):
+        _capture_if_configured(page, config, "login-not-authenticated")
         raise LoginError(
             LoginStatus.ERROR,
             "Sign-in finished but the session does not look authenticated.",

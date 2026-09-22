@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -50,6 +51,19 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--debug-dir",
+        default="status/debug",
+        help=(
+            "Directory for failure diagnostics - a screenshot and the page HTML are "
+            "saved here whenever a browser step fails (default: %(default)s)."
+        ),
+    )
+    parser.add_argument(
+        "--no-debug-dir",
+        action="store_true",
+        help="Do not save any failure diagnostics.",
+    )
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="Log at DEBUG level. Secrets are redacted regardless of level.",
@@ -71,6 +85,12 @@ def main(argv: list[str] | None = None) -> int:
     except ConfigError as exc:
         logger.error("%s", exc)
         return 2
+
+    # A browser failure in CI is otherwise unreadable, so diagnostics are on by default
+    # when run from the command line. The directory holds no credentials.
+    config = replace(
+        config, debug_dir=None if args.no_debug_dir else args.debug_dir
+    )
 
     document = run(config)
     path = write_status_document(document, args.output)

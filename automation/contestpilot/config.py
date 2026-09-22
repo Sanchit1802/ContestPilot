@@ -16,6 +16,11 @@ DEFAULT_DIVISIONS = ("DIV_2", "DIV_3", "DIV_4", "DIV_1_2")
 
 DEFAULT_WINDOW_DAYS = 7
 
+#: Codeforces can be slow to fully render its login/registration pages, and a
+#: datacenter CI IP may see extra latency before the real form appears. 45s gives
+#: real slowness room without letting a truly stuck page hang the job.
+DEFAULT_TIMEOUT_MS = 45_000
+
 #: Names of the environment variables that hold secrets. Used by the redaction helper so
 #: a value can never reach the log, whatever path it took to get there.
 SECRET_ENV_VARS = ("CODEFORCES_PASSWORD",)
@@ -38,8 +43,12 @@ class Config:
     #: Report what would happen without opening a browser or reading the password.
     check_only: bool = False
     headless: bool = True
-    timeout_ms: int = 30_000
+    timeout_ms: int = DEFAULT_TIMEOUT_MS
     workflow_run_url: str | None = None
+    #: Local directory to save a screenshot + HTML dump to on a browser failure.
+    #: `None` disables capture entirely (the default for anything that builds a
+    #: Config directly, e.g. tests); the CLI enables it by default.
+    debug_dir: str | None = None
 
     def __str__(self) -> str:  # pragma: no cover - trivial
         return (
@@ -131,8 +140,9 @@ def load_config(
         dry_run=dry_run,
         check_only=check_only,
         headless=_parse_bool(source.get("PLAYWRIGHT_HEADLESS"), True),
-        timeout_ms=int(source.get("PLAYWRIGHT_TIMEOUT_MS") or 30_000),
+        timeout_ms=int(source.get("PLAYWRIGHT_TIMEOUT_MS") or DEFAULT_TIMEOUT_MS),
         workflow_run_url=source.get("WORKFLOW_RUN_URL") or None,
+        debug_dir=source.get("PLAYWRIGHT_DEBUG_DIR") or None,
     )
 
 

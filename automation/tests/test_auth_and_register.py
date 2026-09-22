@@ -41,6 +41,11 @@ class FakePage:
         self.filled = {}
         self.clicked = []
         self.goto_error = None
+        self.fill_error = None
+
+    def screenshot(self, path, full_page=False):
+        with open(path, "wb") as handle:
+            handle.write(b"fake-png")
 
     def goto(self, url, **_kwargs):
         self.visited.append(url)
@@ -53,6 +58,8 @@ class FakePage:
         return self._contents[0]
 
     def fill(self, selector, value, **_kwargs):
+        if self.fill_error is not None:
+            raise self.fill_error
         self.filled[selector] = value
 
     def click(self, selector, **_kwargs):
@@ -257,3 +264,62 @@ def test_a_navigation_failure_does_not_raise(config):
     result = register_for_contest(page, make_contest(), config)
 
     assert result.status is RegistrationStatus.FAILED
+
+
+def test_a_login_form_that_never_appears_is_reported_as_an_error(config):
+    """The failure seen in CI: the page loaded, matched no known blocker text, and the
+    login field never materialised."""
+    page = FakePage(["<html><body>something unexpected</body></html>"])
+    page.fill_error = RuntimeError(
+        'Page.fill: Timeout 30000ms exceeded. '
+        'Call log: waiting for locator("#handleOrEmail")'
+    )
+
+    with pytest.raises(LoginError) as excinfo:
+        log_in(page, config)
+
+    assert excinfo.value.status is LoginStatus.ERROR
+    assert "did not behave as expected" in excinfo.value.message
+
+
+def test_that_failure_captures_what_codeforces_actually_served(config, tmp_path):
+    page = FakePage(["<html><body>the page codeforces actually served</body></html>"])
+    page.fill_error = RuntimeError('Page.fill: Timeout 30000ms exceeded.')
+
+    with pytest.raises(LoginError) as excinfo:
+        log_in(page, replace(config, debug_dir=str(tmp_path)))
+
+    saved = tmp_path / "login-form-error.html"
+    assert saved.exists()
+    assert "the page codeforces actually served" in saved.read_text(encoding="utf-8")
+    assert "Diagnostics saved" in excinfo.value.message
+
+
+def test_a_captcha_block_is_also_captured_for_inspection(config, tmp_path):
+    page = FakePage(['<div class="g-recaptcha"></div>'])
+
+    with pytest.raises(LoginError):
+        log_in(page, replace(config, debug_dir=str(tmp_path)))
+
+    assert (tmp_path / "login-blocked-before-fill.html").exists()
+
+
+def test_no_diagnostics_are_written_when_no_directory_is_configured(config, tmp_path):
+    page = FakePage(["<html><body>unexpected</body></html>"])
+    page.fill_error = RuntimeError("Page.fill: Timeout")
+
+    with pytest.raises(LoginError):
+        log_in(page, replace(config, debug_dir=None))
+
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_captured_diagnostics_never_contain_the_password(config, tmp_path, monkeypatch):
+    monkeypatch.setenv("CODEFORCES_PASSWORD", config.password)
+    page = FakePage(["<html><body>unexpected</body></html>"])
+    page.fill_error = RuntimeError(f"Page.fill failed with {config.password}")
+
+    with pytest.raises(LoginError) as excinfo:
+        log_in(page, replace(config, debug_dir=str(tmp_path)))
+
+    assert config.password not in excinfo.value.message
