@@ -135,7 +135,14 @@ fun SettingsScreen(
                 title = "Auto-registration",
                 description = "Registration runs in GitHub Actions, not on this device " +
                     "and not on your PC. Codeforces publishes no registration API, so the " +
-                    "automation drives a real browser session instead."
+                    "automation drives a real browser session instead.\n\n" +
+                    "Currently unavailable: Codeforces sits behind Cloudflare, which " +
+                    "challenges sign-in attempts from GitHub's cloud servers with a " +
+                    "\"verify you are human\" check. There is no way past that without " +
+                    "circumventing Cloudflare's bot protection, which this app will not " +
+                    "do. Register for contests manually for now; this switch is left " +
+                    "here in case a workaround (such as a self-hosted runner on a home " +
+                    "network) becomes worthwhile later."
             ) {
                 SwitchRow(
                     label = "Register me automatically",

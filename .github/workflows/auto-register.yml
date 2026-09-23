@@ -3,16 +3,15 @@ name: Auto-register (Codeforces)
 # Registers the configured Codeforces account for qualifying contests and publishes the
 # status document the Android app reads.
 #
-# Runs entirely on GitHub's infrastructure. Your PC does not need to be on.
+# NOT CURRENTLY SCHEDULED. Confirmed by a real run's failure diagnostics: Codeforces
+# sits behind Cloudflare, and Cloudflare serves GitHub-hosted runners (well-known Azure
+# datacenter IP ranges) an interactive "Verify you are human" challenge instead of the
+# site. There is no way to pass that challenge without circumventing Cloudflare's bot
+# protection, which this project will not do. See README.md > Limitations.
 #
-# Schedule: every three hours. Codeforces announces rounds days ahead and opens
-# registration well before the start, so a tighter cadence would burn minutes without
-# registering anything sooner. GitHub warns that scheduled runs can be delayed under
-# load, which is fine here: the app's own reminder is an exact on-device alarm and does
-# not depend on this workflow.
+# workflow_dispatch is kept so this can still be run by hand - for example from a
+# self-hosted runner on a home/residential IP, which Cloudflare does not challenge.
 on:
-  schedule:
-    - cron: '17 */3 * * *'
   workflow_dispatch:
     inputs:
       dry_run:

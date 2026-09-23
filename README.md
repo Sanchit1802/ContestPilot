@@ -38,9 +38,10 @@ alarms on your phone.
 - Shows dates and times in **IST (Asia/Kolkata)** with a live countdown.
 - Fires a local notification a configurable number of minutes before the start
   (10 by default), whether or not the app is open.
-- Registers your Codeforces account for qualifying contests **from the cloud**, and shows
-  you the result.
 - Keeps working offline against cached data, and says plainly when a source is stale.
+- Cloud auto-registration is built and tested, but **confirmed non-functional** from
+  GitHub-hosted runners — see [Cloud auto-registration](#cloud-auto-registration). It is
+  off by default; register for contests manually.
 
 ---
 
@@ -185,7 +186,18 @@ Auto-registration is **not** implemented for CodeChef. Its contests show
 
 ## Cloud auto-registration
 
-`automation/` is a standalone Python package. It runs only in GitHub Actions.
+> **Status: does not currently work, and is switched off by default.** Confirmed by a
+> real run's failure diagnostics (see [Limitations](#limitations)): Codeforces sits
+> behind Cloudflare, and Cloudflare serves GitHub-hosted runners — well-known Azure
+> datacenter IP ranges — an interactive "Verify you are human" challenge instead of the
+> site. There is no way past that without circumventing Cloudflare's bot protection,
+> which this project will not do. The scheduled workflow that used to attempt this has
+> been turned off (`workflow_dispatch` still works, for manual runs from elsewhere, such
+> as a self-hosted runner on a home IP). Everything below describes what the automation
+> does and how it fails safely; it is documented, tested and kept working code, just not
+> one Codeforces currently permits running from GitHub's infrastructure.
+
+`automation/` is a standalone Python package. When run, it runs only in GitHub Actions.
 
 ```
 automation/
@@ -228,6 +240,12 @@ run **stops and reports it**. No attempt is made to solve, bypass or work around
 check. The status becomes `BLOCKED`, the app explains that you need to register manually,
 and the workflow still exits successfully — a human being asked to act is an expected
 outcome, not a broken pipeline.
+
+This is exactly what happens in practice: a real scheduled run failed with the login
+form never appearing, and the failure-diagnostics screenshot (see `diagnostics.py`)
+showed Cloudflare's "Verify you are human" interstitial. That is Cloudflare protecting
+Codeforces from its own datacenter-IP allowlist, not a bug in this automation — and it
+is exactly the kind of check this project has committed not to try to get around.
 
 ### Running it locally
 
@@ -288,6 +306,10 @@ every message it writes.
 These mirror the app's settings. The app's own toggles control what *it* displays and
 schedules; these control what the *cloud* does. Keep them in step.
 
+Since cloud registration does not currently work (see
+[Cloud auto-registration](#cloud-auto-registration)), these variables have no effect
+unless you run `auto-register.yml` by hand from somewhere Cloudflare will not challenge.
+
 ### 4. Enable workflows
 
 **Actions → I understand my workflows, go ahead and enable them.**
@@ -295,12 +317,13 @@ schedules; these control what the *cloud* does. Keep them in step.
 | Workflow | Schedule | Does |
 |---|---|---|
 | `contest-check.yml` | daily, 01:35 UTC | Lists qualifying contests. No sign-in, no browser, no credential. Also keeps the repository active. |
-| `auto-register.yml` | every 3 hours | Signs in and registers. Publishes the status document. |
+| `auto-register.yml` | manual only (`workflow_dispatch`) | Signs in and registers. **Blocked by Cloudflare from a GitHub-hosted runner** — see below. |
 | `ci.yml` | on push / PR | Python tests, Android unit tests, APK build |
 
-Run `auto-register` once manually (**Actions → Auto-register → Run workflow**) to create
-the `status` branch. Tick *dry run* the first time if you want to verify sign-in without
-submitting anything.
+`auto-register.yml` is not scheduled because it cannot succeed from GitHub's own
+infrastructure. It is left runnable by hand (**Actions → Auto-register → Run workflow**)
+in case you want to try it from a self-hosted runner on a residential IP, which
+Cloudflare does not challenge.
 
 ---
 
@@ -460,16 +483,15 @@ free.
 - The **GitHub Free plan** includes **2,000 minutes/month** on standard runners for private
   repositories, plus 500 MB artifact storage.
 
-Estimated usage with the default schedule:
+`auto-register.yml` is no longer scheduled (see
+[Cloud auto-registration](#cloud-auto-registration)), so it costs nothing unless run by
+hand. Estimated usage from the workflows that do run on a schedule:
 
 | Workflow | Runs/month | Approx. minutes/run | Approx. total |
 |---|---|---|---|
-| `auto-register` | ~240 (every 3 h) | 2–4 (most end before launching a browser) | ~480–960 |
 | `contest-check` | ~30 (daily) | ~1 | ~30 |
 
-So roughly **500–1,000 minutes/month** on a private repository — inside the 2,000 free
-minutes, but not comfortably. On a public repository the standard-runner usage is free.
-If you want more headroom, widen the `auto-register` cron to every 6 hours.
+That is negligible on either plan.
 
 Everything else is free: the Codeforces and CodeChef endpoints are public and
 unauthenticated, and the app stores everything else on the device.
@@ -493,28 +515,37 @@ Contests, the UI, and notifications work with **no account at all**.
 
 These are real constraints, documented rather than worked around:
 
-1. **Codeforces has no registration API.** Registration is browser automation, which is
+1. **Cloud auto-registration does not work, confirmed.** Codeforces sits behind
+   Cloudflare, and Cloudflare serves GitHub-hosted runners (Azure datacenter IP ranges)
+   an interactive "Verify you are human" challenge in place of the login page. This was
+   diagnosed from a real failed run's captured screenshot, not guessed. There is no fix
+   that does not mean circumventing Cloudflare's bot protection, which this project will
+   not do. The feature is off by default and its scheduled workflow is disabled; use the
+   app for contests and reminders and register manually, or point `auto-register.yml`
+   (`workflow_dispatch`) at a self-hosted runner on a residential IP if you want to
+   revisit this.
+2. **Codeforces has no registration API.** Registration is browser automation, which is
    inherently more fragile than an API and can break if Codeforces changes its markup.
-2. **Registration status cannot be read from the official API.** It comes only from the
+3. **Registration status cannot be read from the official API.** It comes only from the
    automation's own report, so a contest ContestPilot has never processed shows
    "Unknown" — not "not registered".
-3. **No rated flag exists.** Division rules are name-based. ContestPilot never claims a
+4. **No rated flag exists.** Division rules are name-based. ContestPilot never claims a
    round is rated.
-4. **CAPTCHA and 2FA stop the automation.** Deliberately. If Codeforces enables either for
+5. **CAPTCHA and 2FA stop the automation.** Deliberately. If Codeforces enables either for
    your account, auto-registration cannot proceed and you register manually.
-5. **CodeChef's contest endpoint is unofficial** and may change or disappear.
-6. **CodeChef auto-registration is not implemented.**
-7. **Scheduled workflows are not punctual.** GitHub delays them under load and may drop
+6. **CodeChef's contest endpoint is unofficial** and may change or disappear.
+7. **CodeChef auto-registration is not implemented.**
+8. **Scheduled workflows are not punctual.** GitHub delays them under load and may drop
    queued runs. Registration windows are hours wide, so this is tolerable; the phone
    reminder does not depend on it.
-8. **A public repository is effectively required** for the app to read the status feed
+9. **A public repository is effectively required** for the app to read the status feed
    without a token.
-9. **Scheduled workflows in a public repository are disabled after 60 days without
-   repository activity.** The daily `contest-check` commit is what keeps them alive.
-10. **A private repository consumes free Actions minutes**, which may run out.
-11. **Exact alarms can be denied** by the OS or restricted by aggressive battery
+10. **Scheduled workflows in a public repository are disabled after 60 days without
+    repository activity.** The daily `contest-check` commit is what keeps them alive.
+11. **A private repository consumes free Actions minutes**, which may run out.
+12. **Exact alarms can be denied** by the OS or restricted by aggressive battery
     management on some devices; the app falls back to inexact alarms and says so.
-12. **`compileSdk` is 36.1**, so library versions are pinned to ones compatible with it
+13. **`compileSdk` is 36.1**, so library versions are pinned to ones compatible with it
     (Compose BOM 2026.02.00, Navigation 2.9.8, Lifecycle 2.10.0). Moving to API 37 would
     allow newer versions.
 
