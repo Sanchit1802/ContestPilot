@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-07T07:41:12Z",
-  "generatedAtEpochSeconds": 1791358872,
+  "generatedAt": "2026-10-08T07:57:13Z",
+  "generatedAtEpochSeconds": 1791446233,
   "run": {
     "status": "SUCCESS",
-    "message": "Check only: 3 contest(s) qualify.",
-    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/37588844221"
+    "message": "Check only: 2 contest(s) qualify.",
+    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/37746628256"
   },
   "codeforces": {
     "handle": "sanchit07",
@@ -20,17 +20,7 @@
       "division": "DIV_1",
       "status": "SKIPPED",
       "message": "division is not selected for auto-registration",
-      "updatedAtEpochSeconds": 1791358872
-    },
-    {
-      "platform": "CODEFORCES",
-      "contestId": "2275",
-      "contestName": "Codeforces Round 1125 (Div. 3)",
-      "startTimeSeconds": 1791383700,
-      "division": "DIV_3",
-      "status": "PENDING",
-      "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1791358872
+      "updatedAtEpochSeconds": 1791446233
     },
     {
       "platform": "CODEFORCES",
@@ -40,7 +30,7 @@
       "division": "DIV_1_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1791358872
+      "updatedAtEpochSeconds": 1791446233
     },
     {
       "platform": "CODEFORCES",
@@ -50,7 +40,7 @@
       "division": "DIV_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1791358872
+      "updatedAtEpochSeconds": 1791446233
     }
   ]
 }
