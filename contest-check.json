@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-14T06:38:53Z",
-  "generatedAtEpochSeconds": 1791959933,
+  "generatedAt": "2026-10-15T06:21:35Z",
+  "generatedAtEpochSeconds": 1792045295,
   "run": {
     "status": "SUCCESS",
-    "message": "Check only: 2 contest(s) qualify.",
-    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/38523412755"
+    "message": "Check only: 1 contest(s) qualify.",
+    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/38691918822"
   },
   "codeforces": {
     "handle": "sanchit07",
@@ -14,23 +14,13 @@
   "registrations": [
     {
       "platform": "CODEFORCES",
-      "contestId": "2276",
-      "contestName": "Educational Codeforces Round 195 (Rated for Div. 2)",
-      "startTimeSeconds": 1791988500,
-      "division": "DIV_2",
-      "status": "PENDING",
-      "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1791959933
-    },
-    {
-      "platform": "CODEFORCES",
       "contestId": "2261",
       "contestName": "WorldQuant Round 1 (Codeforces Round 1128, Div. 1 + Div. 2)",
       "startTimeSeconds": 1792247700,
       "division": "DIV_1_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1791959933
+      "updatedAtEpochSeconds": 1792045295
     }
   ]
 }
