@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T07:37:35Z",
-  "generatedAtEpochSeconds": 1793259455,
+  "generatedAt": "2026-10-30T07:41:29Z",
+  "generatedAtEpochSeconds": 1793346089,
   "run": {
     "status": "SUCCESS",
     "message": "Check only: 2 contest(s) qualify.",
-    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/40836619798"
+    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/41021610428"
   },
   "codeforces": {
     "handle": "sanchit07",
@@ -14,13 +14,23 @@
   "registrations": [
     {
       "platform": "CODEFORCES",
+      "contestId": "2281",
+      "contestName": "ICPC 2026 Online Challenge 2 powered by Huawei",
+      "startTimeSeconds": 1793876400,
+      "division": "OTHER",
+      "status": "SKIPPED",
+      "message": "division is not selected for auto-registration",
+      "updatedAtEpochSeconds": 1793346089
+    },
+    {
+      "platform": "CODEFORCES",
       "contestId": "2278",
       "contestName": "Codeforces Round 1131 (Div. 3)",
       "startTimeSeconds": 1793457300,
       "division": "DIV_3",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1793259455
+      "updatedAtEpochSeconds": 1793346089
     },
     {
       "platform": "CODEFORCES",
@@ -30,7 +40,7 @@
       "division": "DIV_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1793259455
+      "updatedAtEpochSeconds": 1793346089
     }
   ]
 }
