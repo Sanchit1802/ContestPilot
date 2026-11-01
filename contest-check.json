@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-31T07:27:25Z",
-  "generatedAtEpochSeconds": 1793431645,
+  "generatedAt": "2026-11-01T08:03:04Z",
+  "generatedAtEpochSeconds": 1793520184,
   "run": {
     "status": "SUCCESS",
     "message": "Check only: 3 contest(s) qualify.",
-    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/41180647287"
+    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/41287187502"
   },
   "codeforces": {
     "handle": "sanchit07",
@@ -14,13 +14,13 @@
   "registrations": [
     {
       "platform": "CODEFORCES",
-      "contestId": "2278",
-      "contestName": "Codeforces Round 1131 (Div. 3)",
-      "startTimeSeconds": 1793457300,
-      "division": "DIV_3",
-      "status": "PENDING",
-      "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1793431645
+      "contestId": "2279",
+      "contestName": "Codeforces Round (Div. 1)",
+      "startTimeSeconds": 1794062100,
+      "division": "DIV_1",
+      "status": "SKIPPED",
+      "message": "division is not selected for auto-registration",
+      "updatedAtEpochSeconds": 1793520184
     },
     {
       "platform": "CODEFORCES",
@@ -30,7 +30,7 @@
       "division": "DIV_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1793431645
+      "updatedAtEpochSeconds": 1793520184
     },
     {
       "platform": "CODEFORCES",
@@ -40,7 +40,17 @@
       "division": "DIV_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1793431645
+      "updatedAtEpochSeconds": 1793520184
+    },
+    {
+      "platform": "CODEFORCES",
+      "contestId": "2280",
+      "contestName": "Codeforces Round (Div. 2)",
+      "startTimeSeconds": 1794062100,
+      "division": "DIV_2",
+      "status": "PENDING",
+      "message": "Qualifies for auto-registration on the next registration run.",
+      "updatedAtEpochSeconds": 1793520184
     }
   ]
 }
