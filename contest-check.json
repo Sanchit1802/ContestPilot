@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-04T07:56:49Z",
-  "generatedAtEpochSeconds": 1793779009,
+  "generatedAt": "2026-11-05T08:24:43Z",
+  "generatedAtEpochSeconds": 1793867083,
   "run": {
     "status": "SUCCESS",
-    "message": "Check only: 3 contest(s) qualify.",
-    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/41795765091"
+    "message": "Check only: 2 contest(s) qualify.",
+    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/41994225937"
   },
   "codeforces": {
     "handle": "sanchit07",
@@ -15,42 +15,32 @@
     {
       "platform": "CODEFORCES",
       "contestId": "2279",
-      "contestName": "Codeforces Round (Div. 1)",
+      "contestName": "Codeforces Round 1133 (Div. 1)",
       "startTimeSeconds": 1794062100,
       "division": "DIV_1",
       "status": "SKIPPED",
       "message": "division is not selected for auto-registration",
-      "updatedAtEpochSeconds": 1793779009
-    },
-    {
-      "platform": "CODEFORCES",
-      "contestId": "2283",
-      "contestName": "Educational Codeforces Round 196 (Rated for Div. 2)",
-      "startTimeSeconds": 1793802900,
-      "division": "DIV_2",
-      "status": "PENDING",
-      "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1793779009
+      "updatedAtEpochSeconds": 1793867083
     },
     {
       "platform": "CODEFORCES",
       "contestId": "2284",
-      "contestName": "Codeforces Round (Div. 2)",
+      "contestName": "Codeforces Round 1132 (Div. 2)",
       "startTimeSeconds": 1793975700,
       "division": "DIV_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1793779009
+      "updatedAtEpochSeconds": 1793867083
     },
     {
       "platform": "CODEFORCES",
       "contestId": "2280",
-      "contestName": "Codeforces Round (Div. 2)",
+      "contestName": "Codeforces Round 1133 (Div. 2)",
       "startTimeSeconds": 1794062100,
       "division": "DIV_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1793779009
+      "updatedAtEpochSeconds": 1793867083
     }
   ]
 }
