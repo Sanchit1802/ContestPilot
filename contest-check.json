@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-14T07:57:31Z",
-  "generatedAtEpochSeconds": 1794643051,
+  "generatedAt": "2026-11-15T08:23:18Z",
+  "generatedAtEpochSeconds": 1794730998,
   "run": {
     "status": "SUCCESS",
-    "message": "Check only: 1 contest(s) qualify.",
-    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/43573485499"
+    "message": "Check only: 2 contest(s) qualify.",
+    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/43694247469"
   },
   "codeforces": {
     "handle": "sanchit07",
@@ -14,13 +14,33 @@
   "registrations": [
     {
       "platform": "CODEFORCES",
+      "contestId": "2287",
+      "contestName": "Codeforces Round (Div. 1)",
+      "startTimeSeconds": 1795271700,
+      "division": "DIV_1",
+      "status": "SKIPPED",
+      "message": "division is not selected for auto-registration",
+      "updatedAtEpochSeconds": 1794730998
+    },
+    {
+      "platform": "CODEFORCES",
       "contestId": "2285",
       "contestName": "Codeforces Round 1135 (Div. 2)",
       "startTimeSeconds": 1794753300,
       "division": "DIV_2",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1794643051
+      "updatedAtEpochSeconds": 1794730998
+    },
+    {
+      "platform": "CODEFORCES",
+      "contestId": "2288",
+      "contestName": "Codeforces Round (Div. 2)",
+      "startTimeSeconds": 1795271700,
+      "division": "DIV_2",
+      "status": "PENDING",
+      "message": "Qualifies for auto-registration on the next registration run.",
+      "updatedAtEpochSeconds": 1794730998
     }
   ]
 }
