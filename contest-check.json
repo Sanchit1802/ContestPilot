@@ -1,15 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-23T09:41:46Z",
-  "generatedAtEpochSeconds": 1795426906,
+  "generatedAt": "2026-11-24T11:33:35Z",
+  "generatedAtEpochSeconds": 1795520015,
   "run": {
     "status": "SUCCESS",
-    "message": "Check only: 0 contest(s) qualify.",
-    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/45149355229"
+    "message": "Check only: 1 contest(s) qualify.",
+    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/45385259630"
   },
   "codeforces": {
     "handle": "sanchit07",
     "loginStatus": "NOT_ATTEMPTED"
   },
-  "registrations": []
+  "registrations": [
+    {
+      "platform": "CODEFORCES",
+      "contestId": "2292",
+      "contestName": "Codeforces Round 1138 (Div. 3)",
+      "startTimeSeconds": 1795790100,
+      "division": "DIV_3",
+      "status": "PENDING",
+      "message": "Qualifies for auto-registration on the next registration run.",
+      "updatedAtEpochSeconds": 1795520015
+    }
+  ]
 }
