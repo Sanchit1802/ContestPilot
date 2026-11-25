@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-24T11:33:35Z",
-  "generatedAtEpochSeconds": 1795520015,
+  "generatedAt": "2026-11-25T10:22:26Z",
+  "generatedAtEpochSeconds": 1795602146,
   "run": {
     "status": "SUCCESS",
     "message": "Check only: 1 contest(s) qualify.",
-    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/45385259630"
+    "workflowRunUrl": "https://github.com/Sanchit1802/ContestPilot/actions/runs/45594302330"
   },
   "codeforces": {
     "handle": "sanchit07",
@@ -14,13 +14,23 @@
   "registrations": [
     {
       "platform": "CODEFORCES",
+      "contestId": "2286",
+      "contestName": "Kotlin Heroes: Practice 15",
+      "startTimeSeconds": 1796135400,
+      "division": "OTHER",
+      "status": "SKIPPED",
+      "message": "division is not selected for auto-registration",
+      "updatedAtEpochSeconds": 1795602146
+    },
+    {
+      "platform": "CODEFORCES",
       "contestId": "2292",
       "contestName": "Codeforces Round 1138 (Div. 3)",
       "startTimeSeconds": 1795790100,
       "division": "DIV_3",
       "status": "PENDING",
       "message": "Qualifies for auto-registration on the next registration run.",
-      "updatedAtEpochSeconds": 1795520015
+      "updatedAtEpochSeconds": 1795602146
     }
   ]
 }
